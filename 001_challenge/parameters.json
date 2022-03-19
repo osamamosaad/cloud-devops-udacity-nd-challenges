@@ -1,26 +1,26 @@
 [
     {
         "ParameterKey": "AIM",
-        "ParameterValue": "ami-0c02fb55956c7d316"
+        "ParameterValue": "Image ID"
     },
     {
         "ParameterKey": "SubnetId",
-        "ParameterValue": "subnet-0102ff879897fafbb"
+        "ParameterValue": "Subnet ID"
     },
     {
         "ParameterKey": "VPCID",
-        "ParameterValue": "vpc-09dfdad91d3ae6a79"
+        "ParameterValue": "VPC ID"
     },
     {
         "ParameterKey": "InstanceType",
-        "ParameterValue": "t2.micro"
+        "ParameterValue": "Instance Type"
     },
     {
         "ParameterKey": "KeyPiarName",
-        "ParameterValue": "MyKeyPair"
+        "ParameterValue": "Your Key Pair"
     },
     {
         "ParameterKey": "SSHAccessIp",
-        "ParameterValue": "154.190.68.146/32"
+        "ParameterValue": "Your IP"
     }
 ]
