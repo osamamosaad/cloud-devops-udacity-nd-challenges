@@ -1,0 +1,7 @@
+- [x] Create an instance in a given VPC
+- [x] Write a script that create a resourece to create security group which allow:
+    - [x] Inbound access on TCP 80
+    - [x] Make the Instance accessible over SSH
+    - [x] Allow unrestricted outbound access.
+- [x] write a script that create a resource that deploy EC2 server and associate it's network interface with the security group that created in the previous step
+- [x] Assign key pair to the Instance

@@ -1,0 +1,75 @@
+Description: >
+  - Create an instance in a given VPC
+  - Write a script that create a resourece to create security group which allow only inbound access on TCP 80 and also allow unrestricted outbound access.
+  - write a script that create a resource that deploy EC2 server and associate it's network interface with the security group that created in the previous step
+  - Assign key pair to the Instance
+  - Make the Instance accessible over SSH
+
+Parameters:
+  VPCID:
+    Type: AWS::EC2::VPC::Id
+  SubnetId:
+    Type: AWS::EC2::Subnet::Id
+  AIM:
+    Type: AWS::EC2::Image::Id
+  InstanceType:
+    Type: String
+  KeyPiarName:
+    Type: AWS::EC2::KeyPair::KeyName
+  SSHAccessIp:
+    Type: String
+    NoEcho: true
+Resources:
+  WebAccessSG:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: WebAccessSG
+      GroupDescription: Allow Access web server over http port 80
+      VpcId: !Ref VPCID
+      Tags:
+        - Key: StackName
+          Value: MyFirstChallenge
+        - Key: Name
+          Value: WebAccessSG
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: !Ref SSHAccessIp
+      SecurityGroupEgress:
+        - IpProtocol: -1
+          FromPort: -1
+          ToPort: -1
+          CidrIp: 0.0.0.0/0
+  WebServer:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: !Ref AIM
+      KeyName: !Ref KeyPiarName
+      InstanceType: !Ref InstanceType
+      NetworkInterfaces:
+        - AssociatePublicIpAddress: true
+          DeviceIndex: 0
+          GroupSet:
+            - Ref: "WebAccessSG"
+          SubnetId: !Ref SubnetId
+      UserData:
+       Fn::Base64: !Sub |
+         #!/bin/bash
+         sudo yum update -y
+         sudo yum install -y httpd
+         sudo systemctl start httpd
+         sudo systemctl enable httpd
+         # Set file permissions for the Apache web server
+         sudo groupadd www
+         sudo usermod -a -G www ec2-user
+         sudo chgrp -R www /var/www
+         sudo chmod 2775 /var/www
+         find /var/www -type d -exec sudo chmod 2775 {} +
+         find /var/www -type f -exec sudo chmod 0664 {} +
+         # Create a new PHP file at  /var/www/html/ path
+         echo 'Hello, World! - This is the first CloudFormation challenge!' >> /var/www/html/index.html
